@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Hello Sensor</string>
+    <string name="info_text">Choose sensor(s) to test down below: </string>
+    <string name="compass_btn">Compass</string>
+    <string name="acc_btn">Accelerometer</string>
+    <string name="north_pole">Nice, you are on the way towards the north pole!</string>
+
+    <string name="title_activity_ball">BallActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>
