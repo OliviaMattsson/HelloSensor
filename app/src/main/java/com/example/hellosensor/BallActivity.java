@@ -1,19 +1,27 @@
 package com.example.hellosensor;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.view.Display;
 import android.widget.ImageView;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 
 public class BallActivity extends AppCompatActivity implements SensorEventListener{
-
+    Vibrator vibe;
+    VibrationEffect effect;
     private SensorManager sensorManager;
     private Sensor accelerometer;
     private long lastUpdate;
@@ -26,6 +34,7 @@ public class BallActivity extends AppCompatActivity implements SensorEventListen
     private int maxY;
     private int maxZ = 400;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,8 +44,25 @@ public class BallActivity extends AppCompatActivity implements SensorEventListen
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         lastUpdate = System.currentTimeMillis();
         display = getWindowManager().getDefaultDisplay();
-
+        vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        if(vibe==null || !vibe.hasVibrator()){
+            noSensorsAlert();
+        } else{
+            effect = VibrationEffect.createOneShot(100, 40);
+        }
         calculateScreenSize();
+    }
+
+    private void noSensorsAlert() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setMessage("Your device doesn't support the Ball Activity.")
+                .setCancelable(false)
+                .setNegativeButton("Close",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        finish();
+                    }
+                });
+        alertDialog.show();
     }
 
     @Override
@@ -64,13 +90,17 @@ public class BallActivity extends AppCompatActivity implements SensorEventListen
 
             if(x > maxX){
                 x = maxX;
+                vibrate();
             } else if (x < 0){
                 x = 0;
+                vibrate();
             }
             if(y > maxY){
                 y = maxY;
+                vibrate();
             } else if(y < 0){
                 y = 0;
+                vibrate();
             }
             if(z > maxZ){
                 z = maxZ;
@@ -86,6 +116,16 @@ public class BallActivity extends AppCompatActivity implements SensorEventListen
 
 
         }
+    }
+
+    private void vibrate() {
+            if(vibe.hasVibrator()) {
+                try{
+                    vibe.vibrate(effect);
+                } catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
     }
 
     private void calculateScreenSize() {

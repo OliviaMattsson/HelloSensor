@@ -157,7 +157,6 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
                 noSensorsAlert();
             } else{
                 effect = VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE);
-                System.out.println(effect);
             }
             mRotationV = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
             haveSensor = mSensorManager.registerListener(this, mRotationV, SensorManager.SENSOR_DELAY_UI);
